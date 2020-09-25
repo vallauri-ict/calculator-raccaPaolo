@@ -1,9 +1,0 @@
-C:\Users\paolo\source\repos\calculatorFormSlc\calculatorFormPrj\bin\Debug\calculatorFormPrj.exe.config
-C:\Users\paolo\source\repos\calculatorFormSlc\calculatorFormPrj\bin\Debug\calculatorFormPrj.exe
-C:\Users\paolo\source\repos\calculatorFormSlc\calculatorFormPrj\bin\Debug\calculatorFormPrj.pdb
-C:\Users\paolo\source\repos\calculatorFormSlc\calculatorFormPrj\obj\Debug\calculatorFormPrj.csprojAssemblyReference.cache
-C:\Users\paolo\source\repos\calculatorFormSlc\calculatorFormPrj\obj\Debug\calculatorFormPrj.formMain.resources
-C:\Users\paolo\source\repos\calculatorFormSlc\calculatorFormPrj\obj\Debug\calculatorFormPrj.Properties.Resources.resources
-C:\Users\paolo\source\repos\calculatorFormSlc\calculatorFormPrj\obj\Debug\calculatorFormPrj.csproj.GenerateResource.cache
-C:\Users\paolo\source\repos\calculatorFormSlc\calculatorFormPrj\obj\Debug\calculatorFormPrj.exe
-C:\Users\paolo\source\repos\calculatorFormSlc\calculatorFormPrj\obj\Debug\calculatorFormPrj.pdb
