@@ -10,11 +10,18 @@ namespace calculatorFormPrj
         {
             public char Content;
             public bool IsBold;
+            public bool IsNumber;
+            public bool IsDecimalSeparator;
+            public bool IsPlusMinusSign;
 
-            public ButtonStruct(char content, bool isBold)
+
+            public ButtonStruct(char content, bool isBold, bool isNumber = false, bool isDecimalSeparator = false, bool isPlusMinusSign=false)
             {
                 this.Content = content;
                 this.IsBold = isBold;
+                this.IsNumber = isNumber;
+                this.IsDecimalSeparator = isDecimalSeparator;
+                this.IsPlusMinusSign = isPlusMinusSign;
             }
             //per noi oggetto .tostring fa gia rappresentazione stringa del content
             public override string ToString()
@@ -27,10 +34,10 @@ namespace calculatorFormPrj
         {
             {new ButtonStruct(' ',false),new ButtonStruct(' ',false),new ButtonStruct(' ',false),new ButtonStruct(' ',false)},
             {new ButtonStruct(' ',false),new ButtonStruct(' ',false),new ButtonStruct(' ',false),new ButtonStruct('/',false)},
-            {new ButtonStruct('7',true),new ButtonStruct('8',true),new ButtonStruct('9',true),new ButtonStruct('x',false)},
-            {new ButtonStruct('4',true),new ButtonStruct('5',true),new ButtonStruct('6',true),new ButtonStruct('-',false)},
-            {new ButtonStruct('1',true),new ButtonStruct('2',true),new ButtonStruct('3',true),new ButtonStruct('+',false)},
-            {new ButtonStruct('±',false),new ButtonStruct('0',true),new ButtonStruct(',',false),new ButtonStruct('=',false)}
+            {new ButtonStruct('7',true,true),new ButtonStruct('8',true,true),new ButtonStruct('9',true,true),new ButtonStruct('x',false)},
+            {new ButtonStruct('4',true,true),new ButtonStruct('5',true,true),new ButtonStruct('6',true,true),new ButtonStruct('-',false)},
+            {new ButtonStruct('1',true,true),new ButtonStruct('2',true,true),new ButtonStruct('3',true,true),new ButtonStruct('+',false)},
+            {new ButtonStruct('±',false,false,false,true),new ButtonStruct('0',true,true),new ButtonStruct(',',false,false,true),new ButtonStruct('=',false)}
         };
 
         private RichTextBox resultBox;
@@ -43,11 +50,11 @@ namespace calculatorFormPrj
 
         private void formMain_Load(object sender, EventArgs e)
         {
-            MakeResultBox(resultBox);
+            MakeResultBox();
             MakeButtons(buttons);
         }
 
-        private void MakeResultBox(RichTextBox resultBox)
+        private void MakeResultBox()
         {
             resultBox = new RichTextBox();
             resultBox.Font = new Font("Segoe UI", 22);
@@ -56,6 +63,8 @@ namespace calculatorFormPrj
             resultBox.Height = 50;
             resultBox.Top = 40;
             resultBox.ReadOnly = true;
+            resultBox.Text = "0";
+            resultBox.TabStop=false;//per rimuovere cursore che lampeggia, perchè result box non prende il fuoco
             this.Controls.Add(resultBox);
 
         }
@@ -81,6 +90,8 @@ namespace calculatorFormPrj
                     newButton.Height = buttonHeight;
                     newButton.Left = posX;
                     newButton.Top = posY;
+                    newButton.Tag = bs;//proprietà tag serve per taggare pulsante
+                    newButton.Click += Button_Click;
                     this.Controls.Add(newButton);
                     posX += buttonWidth;
                 }
@@ -88,6 +99,40 @@ namespace calculatorFormPrj
                 posY += buttonHeight;
             }
 
+        }
+
+        private void Button_Click(object sender, EventArgs e)
+        {
+            //qualsiasi controllo del netframework deriva sempre da object
+            //se voglio utilizzare proprietà specifiche dei bottoni devo effettuare casting
+            Button clickedButton = (Button)sender;//effettuo casting del sender, per definirlo button dal più generico object
+            //MessageBox.Show("Button: "+clickedButton.Text);
+            ButtonStruct bs = (ButtonStruct)clickedButton.Tag;//casting perchè oggetto
+            if (bs.IsNumber)
+            {
+                resultBox.Text += clickedButton.Text;
+            }
+            else
+            {
+                if (bs.IsDecimalSeparator)
+                {
+                    if (!resultBox.Text.Contains(bs.Content.ToString()))
+                    {
+                        resultBox.Text += clickedButton.Text;
+                    }
+                }
+                if (bs.IsPlusMinusSign)
+                {
+                    if (!resultBox.Text.Contains("-"))
+                    {
+                        resultBox.Text = "-" + resultBox.Text;
+                    }
+                    else {
+                        resultBox.Text=resultBox.Text.Substring(1);
+                    }
+                }
+            }
+           
         }
     }
 }
