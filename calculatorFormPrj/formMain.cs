@@ -15,7 +15,7 @@ namespace calculatorFormPrj
             public bool IsPlusMinusSign;
 
 
-            public ButtonStruct(char content, bool isBold, bool isNumber = false, bool isDecimalSeparator = false, bool isPlusMinusSign=false)
+            public ButtonStruct(char content, bool isBold, bool isNumber = false, bool isDecimalSeparator = false, bool isPlusMinusSign = false)
             {
                 this.Content = content;
                 this.IsBold = isBold;
@@ -32,7 +32,7 @@ namespace calculatorFormPrj
         }
         private ButtonStruct[,] buttons =
         {
-            {new ButtonStruct(' ',false),new ButtonStruct(' ',false),new ButtonStruct(' ',false),new ButtonStruct(' ',false)},
+            {new ButtonStruct(' ',false),new ButtonStruct(' ',false),new ButtonStruct('C',false),new ButtonStruct('<',false)},
             {new ButtonStruct(' ',false),new ButtonStruct(' ',false),new ButtonStruct(' ',false),new ButtonStruct('/',false)},
             {new ButtonStruct('7',true,true),new ButtonStruct('8',true,true),new ButtonStruct('9',true,true),new ButtonStruct('x',false)},
             {new ButtonStruct('4',true,true),new ButtonStruct('5',true,true),new ButtonStruct('6',true,true),new ButtonStruct('-',false)},
@@ -64,9 +64,20 @@ namespace calculatorFormPrj
             resultBox.Top = 40;
             resultBox.ReadOnly = true;
             resultBox.Text = "0";
-            resultBox.TabStop=false;//per rimuovere cursore che lampeggia, perchè result box non prende il fuoco
+            resultBox.TabStop = false;//per rimuovere cursore che lampeggia, perchè result box non prende il fuoco
+            resultBox.TextChanged += ResultBox_TextChanged;
             this.Controls.Add(resultBox);
 
+        }
+
+        private void ResultBox_TextChanged(object sender, EventArgs e)
+        {
+            int newSize = 22 + (15 - resultBox.Text.Length);
+            if (newSize>8&&newSize<23)
+            {
+                int delta = 15 - resultBox.Text.Length;
+                resultBox.Font = new Font("Segoe UI", newSize);
+            }
         }
 
         private void MakeButtons(ButtonStruct[,] buttons)
@@ -108,6 +119,10 @@ namespace calculatorFormPrj
             Button clickedButton = (Button)sender;//effettuo casting del sender, per definirlo button dal più generico object
             //MessageBox.Show("Button: "+clickedButton.Text);
             ButtonStruct bs = (ButtonStruct)clickedButton.Tag;//casting perchè oggetto
+            if (resultBox.Text == "0" && bs.IsDecimalSeparator == false)
+            {
+                resultBox.Text = "";
+            }
             if (bs.IsNumber)
             {
                 resultBox.Text += clickedButton.Text;
@@ -127,12 +142,34 @@ namespace calculatorFormPrj
                     {
                         resultBox.Text = "-" + resultBox.Text;
                     }
-                    else {
-                        resultBox.Text=resultBox.Text.Substring(1);
+                    else
+                    {
+                        resultBox.Text = resultBox.Text.Substring(1);
+                    }
+                }
+                else
+                {
+                    switch (bs.Content)
+                    {
+                        case 'C':
+                            resultBox.Text = "0";
+                            break;
+                        case '<':
+                            if (resultBox.Text.Length != 0)
+                            {
+                                resultBox.Text = resultBox.Text.Remove(resultBox.Text.Length - 1);
+                            }
+                            if (resultBox.Text.Length == 0 || resultBox.Text == "-0" || resultBox.Text == "-")
+                            {
+                                resultBox.Text = "0";
+                            }
+                            break;
+                        default:
+                            break;
                     }
                 }
             }
-           
+
         }
     }
 }
