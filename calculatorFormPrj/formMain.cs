@@ -44,6 +44,7 @@ namespace calculatorFormPrj
         };
 
         private RichTextBox resultBox;
+        private Font baseFont = new Font("Segoe UI", 22, FontStyle.Bold);//font di default
 
         private const char ASCIIZERO = '\x0000';
         private double operand1, operand2, result;
@@ -66,7 +67,7 @@ namespace calculatorFormPrj
         private void MakeResultBox()
         {
             resultBox = new RichTextBox();
-            resultBox.Font = new Font("Segoe UI", 22);
+            resultBox.Font = baseFont;
             resultBox.SelectionAlignment = HorizontalAlignment.Right;
             resultBox.Width = this.Width - 16;
             resultBox.Height = 50;
@@ -81,12 +82,20 @@ namespace calculatorFormPrj
 
         private void ResultBox_TextChanged(object sender, EventArgs e)
         {
-            int newSize = 22 + (15 - resultBox.Text.Length);
-            if (newSize > 8 && newSize < 23)
+            if (resultBox.Text.Length==1)
             {
-                int delta = 15 - resultBox.Text.Length;
-                resultBox.Font = new Font("Segoe UI", newSize);
+                resultBox.Font = baseFont;
             }
+            int delta = 17 - resultBox.Text.Length;
+            if (delta%2==0)
+            {
+                float newSize = baseFont.Size + delta;
+                if (newSize > 8 && newSize < 23)
+                {
+                    resultBox.Font = new Font(baseFont.FontFamily, newSize, baseFont.Style);
+                }
+            }
+
         }
 
         private void MakeButtons(ButtonStruct[,] buttons)
@@ -129,6 +138,7 @@ namespace calculatorFormPrj
             //MessageBox.Show("Button: "+clickedButton.Text);
             ButtonStruct bs = (ButtonStruct)clickedButton.Tag;//casting perchè oggetto
 
+
             if (bs.IsNumber)
             {
                 if (lastButtonClicked.IsEqualSign)
@@ -139,7 +149,10 @@ namespace calculatorFormPrj
                 {
                     resultBox.Text = "";
                 }
-                resultBox.Text += clickedButton.Text;
+                if (resultBox.Text.Length<20)
+                {
+                    resultBox.Text += clickedButton.Text;
+                }
             }
             else
             {
@@ -147,7 +160,10 @@ namespace calculatorFormPrj
                 {
                     if (!resultBox.Text.Contains(bs.Content.ToString()))
                     {
-                        resultBox.Text += clickedButton.Text;
+                        if (resultBox.Text.Length < 20)
+                        {
+                            resultBox.Text += clickedButton.Text;
+                        }
                     }
                 }
                 if (bs.IsPlusMinusSign&&resultBox.Text!="0")//-0 non esiste
@@ -191,13 +207,18 @@ namespace calculatorFormPrj
 
         }
 
+        private string getFormattedNumber(double number)
+        {
+            return String.Format("{0:0,0}");
+        }
+
         private void clearAll(double numberToWrite=0)
         {
             operand1 = 0;
             operand2 = 0;
             result = 0;
             lastOperator = ASCIIZERO;
-            resultBox.Text = numberToWrite.ToString();
+            resultBox.Text = getFormattedNumber(numberToWrite);
         }
 
         private void manageOperators(ButtonStruct bs)
@@ -242,7 +263,7 @@ namespace calculatorFormPrj
                         lastOperator = bs.Content;
                         operand2 = 0;
                     } 
-                    resultBox.Text = result.ToString();
+                    resultBox.Text = getFormattedNumber(result);
                 }
             }
         }
