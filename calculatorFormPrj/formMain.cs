@@ -149,7 +149,7 @@ namespace calculatorFormPrj
                 {
                     resultBox.Text = "";
                 }
-                if (resultBox.Text.Length<20)
+                if (resultBox.Text.Length < 20)
                 {
                     resultBox.Text += clickedButton.Text;
                 }
@@ -209,7 +209,7 @@ namespace calculatorFormPrj
 
         private string getFormattedNumber(double number)
         {
-            return String.Format("{0:0,0}");
+            return String.Format("{0:0,0.0000000000000000}", number) ;
         }
 
         private void clearAll(double numberToWrite=0)
