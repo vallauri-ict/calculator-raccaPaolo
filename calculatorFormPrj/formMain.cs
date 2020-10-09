@@ -207,6 +207,11 @@ namespace calculatorFormPrj
 
         }
 
+        /// <summary>
+        /// Format the number using thousand separator and 16 decimal digits
+        /// </summary>
+        /// <param name="number">The number to format.</param>
+        /// <returns>A String with thousand separator and maximun 16 decimal digits after the decimal separator</returns>
         private string getFormattedNumber(double number)
         {
             //return String.Format ("{0:0,0.0000000000000000}");
