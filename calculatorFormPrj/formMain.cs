@@ -16,7 +16,7 @@ namespace calculatorFormPrj
             public bool IsOperator;
             public bool IsEqualSign;
 
-            public ButtonStruct(char content, bool isBold, bool isNumber = false, bool isDecimalSeparator = false, bool isPlusMinusSign = false, bool isOperator = false,bool isEqualSign=false)
+            public ButtonStruct(char content, bool isBold, bool isNumber = false, bool isDecimalSeparator = false, bool isPlusMinusSign = false, bool isOperator = false, bool isEqualSign = false)
             {
                 this.Content = content;
                 this.IsBold = isBold;
@@ -45,6 +45,7 @@ namespace calculatorFormPrj
 
         private RichTextBox resultBox;
         private Font baseFont = new Font("Segoe UI", 22, FontStyle.Bold);//font di default
+
 
         private const char ASCIIZERO = '\x0000';
         private double operand1, operand2, result;
@@ -82,12 +83,12 @@ namespace calculatorFormPrj
 
         private void ResultBox_TextChanged(object sender, EventArgs e)
         {
-            if (resultBox.Text.Length==1)
+            if (resultBox.Text.Length == 1)
             {
                 resultBox.Font = baseFont;
             }
             int delta = 17 - resultBox.Text.Length;
-            if (delta%2==0)
+            if (delta % 2 == 0)
             {
                 float newSize = baseFont.Size + delta;
                 if (newSize > 8 && newSize < 23)
@@ -95,7 +96,6 @@ namespace calculatorFormPrj
                     resultBox.Font = new Font(baseFont.FontFamily, newSize, baseFont.Style);
                 }
             }
-
         }
 
         private void MakeButtons(ButtonStruct[,] buttons)
@@ -138,7 +138,6 @@ namespace calculatorFormPrj
             //MessageBox.Show("Button: "+clickedButton.Text);
             ButtonStruct bs = (ButtonStruct)clickedButton.Tag;//casting perchè oggetto
 
-
             if (bs.IsNumber)
             {
                 if (lastButtonClicked.IsEqualSign)
@@ -149,7 +148,7 @@ namespace calculatorFormPrj
                 {
                     resultBox.Text = "";
                 }
-                if (resultBox.Text.Length<20)
+                if (resultBox.Text.Length < 20)
                 {
                     resultBox.Text += clickedButton.Text;
                 }
@@ -160,13 +159,10 @@ namespace calculatorFormPrj
                 {
                     if (!resultBox.Text.Contains(bs.Content.ToString()))
                     {
-                        if (resultBox.Text.Length < 20)
-                        {
-                            resultBox.Text += clickedButton.Text;
-                        }
+                        resultBox.Text += clickedButton.Text;
                     }
                 }
-                if (bs.IsPlusMinusSign&&resultBox.Text!="0")//-0 non esiste
+                if (bs.IsPlusMinusSign && resultBox.Text != "0")//-0 non esiste
                 {
                     if (!resultBox.Text.Contains("-"))
                     {
@@ -207,18 +203,7 @@ namespace calculatorFormPrj
 
         }
 
-        /// <summary>
-        /// Format the number using thousand separator and 16 decimal digits
-        /// </summary>
-        /// <param name="number">The number to format.</param>
-        /// <returns>A String with thousand separator and maximun 16 decimal digits after the decimal separator</returns>
-        private string getFormattedNumber(double number)
-        {
-            //return String.Format ("{0:0,0.0000000000000000}");
-            return number.ToString("N16");
-        }
-
-        private void clearAll(double numberToWrite=0)
+        private void clearAll(double numberToWrite = 0)
         {
             operand1 = 0;
             operand2 = 0;
@@ -236,7 +221,7 @@ namespace calculatorFormPrj
             }
             else
             {
-                if (lastButtonClicked.IsOperator&&!lastButtonClicked.IsEqualSign)
+                if (lastButtonClicked.IsOperator && !lastButtonClicked.IsEqualSign)
                 {
                     lastOperator = bs.Content;
                 }
@@ -268,10 +253,15 @@ namespace calculatorFormPrj
                     {
                         lastOperator = bs.Content;
                         operand2 = 0;
-                    } 
+                    }
                     resultBox.Text = getFormattedNumber(result);
                 }
             }
+        }
+        private string getFormattedNumber(double number)
+        {
+            //return String.Format ("{0:0,0.0000000000000000}");
+            return number!=0?number.ToString("N16"):"0";
         }
     }
 }
