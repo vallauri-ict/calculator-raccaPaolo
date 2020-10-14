@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace calculatorFormPrj
@@ -83,17 +84,14 @@ namespace calculatorFormPrj
 
         private void ResultBox_TextChanged(object sender, EventArgs e)
         {
-            if (resultBox.Text.Length == 1)
-            {
-                resultBox.Font = baseFont;
-            }
+           
             int delta = 17 - resultBox.Text.Length;
             if (delta % 2 == 0)
             {
                 float newSize = baseFont.Size + delta;
                 if (newSize > 8 && newSize < 23)
                 {
-                    resultBox.Font = new Font(baseFont.FontFamily, newSize, baseFont.Style);
+                    resultBox.Font = new Font(baseFont.FontFamily, newSize, FontStyle.Bold);
                 }
             }
         }
@@ -261,7 +259,8 @@ namespace calculatorFormPrj
         private string getFormattedNumber(double number)
         {
             //return String.Format ("{0:0,0.0000000000000000}");
-            return number!=0?number.ToString("N16"):"0";
+            char decimalSeparator = Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator[0];
+            return number.ToString("N16").TrimEnd('0').TrimEnd(decimalSeparator);
         }
     }
 }
