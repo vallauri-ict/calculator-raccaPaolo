@@ -212,6 +212,21 @@ namespace calculatorFormPrj
 
         private void manageOperators(ButtonStruct bs)
         {
+            //mettere prima di switch per ordine operazioni
+            if (bs.Content == '¼')
+            {
+                
+                if (lastOperator!=ASCIIZERO)
+                {
+                    operand2 = 1 / (Convert.ToDouble(resultBox.Text));
+                    resultBox.Text = getFormattedNumber(operand2);
+                }
+                else
+                {
+                    result = 1 / (Convert.ToDouble(resultBox.Text));
+                    resultBox.Text = getFormattedNumber(result);
+                }
+            }
             if (lastOperator == ASCIIZERO)//valore di default
             {
                 operand1 = double.Parse(resultBox.Text);
@@ -219,16 +234,18 @@ namespace calculatorFormPrj
             }
             else
             {
+
                 if (lastButtonClicked.IsOperator && !lastButtonClicked.IsEqualSign)
                 {
                     lastOperator = bs.Content;
                 }
                 else
                 {
-                    if (!lastButtonClicked.IsEqualSign)
+                    if (!lastButtonClicked.IsEqualSign&&bs.Content!= '¼')
                     {
                         operand2 = double.Parse(resultBox.Text);
                     }
+                   
                     switch (lastOperator)
                     {
                         case '+':
@@ -243,9 +260,9 @@ namespace calculatorFormPrj
                         case '/':
                             result = operand1 / operand2;
                             break;
-                        case '¼':
+                        /*case '¼':
                             result = 1 / result;//TODO: gestire casi particolar
-                            break;
+                            break;*/
                         default:
                             break;
                     }
@@ -255,9 +272,14 @@ namespace calculatorFormPrj
                         lastOperator = bs.Content;
                         operand2 = 0;
                     }
+                    else
+                    {
+                        lastOperator = ASCIIZERO;
+                    }
                     resultBox.Text = getFormattedNumber(result);
                 }
             }
+            
         }
         private string getFormattedNumber(double number)
         {
