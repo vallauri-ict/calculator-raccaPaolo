@@ -16,8 +16,9 @@ namespace calculatorFormPrj
             public bool IsPlusMinusSign;
             public bool IsOperator;
             public bool IsEqualSign;
+            public bool IsSpecialOperator;//per gestire operazioni che possono avere singolo operatore
 
-            public ButtonStruct(char content, bool isBold, bool isNumber = false, bool isDecimalSeparator = false, bool isPlusMinusSign = false, bool isOperator = false, bool isEqualSign = false)
+            public ButtonStruct(char content, bool isBold, bool isNumber = false, bool isDecimalSeparator = false, bool isPlusMinusSign = false, bool isOperator = false, bool isEqualSign = false, bool isSpecialOperator = false)
             {
                 this.Content = content;
                 this.IsBold = isBold;
@@ -26,6 +27,7 @@ namespace calculatorFormPrj
                 this.IsPlusMinusSign = isPlusMinusSign;
                 this.IsOperator = isOperator;
                 this.IsEqualSign = isEqualSign;
+                this.IsSpecialOperator = isSpecialOperator;
             }
             //per noi oggetto .tostring fa gia rappresentazione stringa del content
             public override string ToString()
@@ -37,7 +39,7 @@ namespace calculatorFormPrj
         private ButtonStruct[,] buttons =
         {
             {new ButtonStruct(' ',false),new ButtonStruct(' ',false),new ButtonStruct('C',false),new ButtonStruct('<',false)},
-            {new ButtonStruct('¼',false,false,false,false,true),new ButtonStruct(' ',false,false,false,false,true),new ButtonStruct(' ',false,false,false,false,true),new ButtonStruct('/',false,false,false,false,true)},
+            {new ButtonStruct('¼',false,false,false,false,true,false,true),new ButtonStruct('²',false,false,false,false,true,false,true),new ButtonStruct('√',false,false,false,false,true,false,true),new ButtonStruct('/',false,false,false,false,true)},
             {new ButtonStruct('7',true,true),new ButtonStruct('8',true,true),new ButtonStruct('9',true,true),new ButtonStruct('x',false,false,false,false,true)},
             {new ButtonStruct('4',true,true),new ButtonStruct('5',true,true),new ButtonStruct('6',true,true),new ButtonStruct('-',false,false,false,false,true)},
             {new ButtonStruct('1',true,true),new ButtonStruct('2',true,true),new ButtonStruct('3',true,true),new ButtonStruct('+',false,false,false,false,true)},
@@ -213,18 +215,47 @@ namespace calculatorFormPrj
         private void manageOperators(ButtonStruct bs)
         {
             //mettere prima di switch per ordine operazioni
-            if (bs.Content == '¼')
+            if (bs.IsSpecialOperator)
             {
-                
-                if (lastOperator!=ASCIIZERO)
+                switch (bs.Content)
                 {
-                    operand2 = 1 / (Convert.ToDouble(resultBox.Text));
-                    resultBox.Text = getFormattedNumber(operand2);
-                }
-                else
-                {
-                    result = 1 / (Convert.ToDouble(resultBox.Text));
-                    resultBox.Text = getFormattedNumber(result);
+                    case '¼':
+                        if (lastOperator != ASCIIZERO)
+                        {
+                            operand2 = 1 / (Convert.ToDouble(resultBox.Text));
+                            resultBox.Text = getFormattedNumber(operand2);
+                        }
+                        else
+                        {
+                            result = 1 / (Convert.ToDouble(resultBox.Text));
+                            resultBox.Text = getFormattedNumber(result);
+                        }
+                        break;
+                    case '√':
+                        if (lastOperator != ASCIIZERO)
+                        {
+                            operand2 = Math.Sqrt(Convert.ToDouble(resultBox.Text));
+                            resultBox.Text = getFormattedNumber(operand2);
+                        }
+                        else
+                        {
+                            result = Math.Sqrt(Convert.ToDouble(resultBox.Text));
+                            resultBox.Text = getFormattedNumber(result);
+                        }
+                        break;
+                    case '²':
+                        if (lastOperator != ASCIIZERO)
+                        {
+                            operand2 = Math.Pow(Convert.ToDouble(resultBox.Text),2);
+                            resultBox.Text = getFormattedNumber(operand2);
+                        }
+                        else
+                        {
+                            result = Math.Pow(Convert.ToDouble(resultBox.Text),2);
+                            resultBox.Text = getFormattedNumber(result);
+                        }
+                        break;
+
                 }
             }
             if (lastOperator == ASCIIZERO)//valore di default
@@ -241,7 +272,8 @@ namespace calculatorFormPrj
                 }
                 else
                 {
-                    if (!lastButtonClicked.IsEqualSign&&bs.Content!= '¼')
+                    //if (!lastButtonClicked.IsEqualSign&&bs.Content!= '¼'&&bs.Content!= '√')
+                    if (!lastButtonClicked.IsEqualSign&&bs.Content!= '¼'&&!bs.IsSpecialOperator)
                     {
                         operand2 = double.Parse(resultBox.Text);
                     }
