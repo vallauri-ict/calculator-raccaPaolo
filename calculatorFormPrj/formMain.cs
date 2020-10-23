@@ -20,6 +20,7 @@ namespace calculatorFormPrj
 
             public ButtonStruct(char content, bool isBold, bool isNumber = false, bool isDecimalSeparator = false, bool isPlusMinusSign = false, bool isOperator = false, bool isEqualSign = false, bool isSpecialOperator = false)
             {
+                //se diventa lungo gestisco con maschera di bit
                 this.Content = content;
                 this.IsBold = isBold;
                 this.IsNumber = isNumber;
@@ -215,19 +216,21 @@ namespace calculatorFormPrj
         private void manageOperators(ButtonStruct bs)
         {
             //mettere prima di switch per ordine operazioni
+            double specialOperatorResult;
             if (bs.IsSpecialOperator)
             {
                 switch (bs.Content)
                 {
                     case '¼':
+                        specialOperatorResult = 1 / (Convert.ToDouble(resultBox.Text));
                         if (lastOperator != ASCIIZERO)
                         {
-                            operand2 = 1 / (Convert.ToDouble(resultBox.Text));
-                            resultBox.Text = getFormattedNumber(operand2);
+                            operand2 = specialOperatorResult;
+                            //resultBox.Text = getFormattedNumber(operand2);
                         }
                         else
                         {
-                            result = 1 / (Convert.ToDouble(resultBox.Text));
+                            result = specialOperatorResult;
                             resultBox.Text = getFormattedNumber(result);
                         }
                         break;
@@ -257,6 +260,7 @@ namespace calculatorFormPrj
                         break;
 
                 }
+                lastButtonClicked = bs;
             }
             if (lastOperator == ASCIIZERO)//valore di default
             {
@@ -268,12 +272,22 @@ namespace calculatorFormPrj
 
                 if (lastButtonClicked.IsOperator && !lastButtonClicked.IsEqualSign)
                 {
-                    lastOperator = bs.Content;
+                    if (bs.IsSpecialOperator)
+                    {
+                        result = operand2;
+                        resultBox.Text = getFormattedNumber(result);
+                        //lastOperator = ASCIIZERO;
+                    }
+                    else
+                    {
+                        lastOperator = bs.Content;
+                    }
+
                 }
                 else
                 {
                     //if (!lastButtonClicked.IsEqualSign&&bs.Content!= '¼'&&bs.Content!= '√')
-                    if (!lastButtonClicked.IsEqualSign&&bs.Content!= '¼'&&!bs.IsSpecialOperator)
+                    if (!lastButtonClicked.IsEqualSign&&!bs.IsSpecialOperator)
                     {
                         operand2 = double.Parse(resultBox.Text);
                     }
@@ -299,15 +313,15 @@ namespace calculatorFormPrj
                             break;
                     }
                     operand1 = result;
-                    if (!bs.IsEqualSign)
+                    if (!bs.IsEqualSign&&!bs.IsSpecialOperator)
                     {
                         lastOperator = bs.Content;
                         operand2 = 0;
                     }
-                    else
-                    {
-                        lastOperator = ASCIIZERO;
-                    }
+                    //else if (bs.IsSpecialOperator)
+                    //{
+                    //    lastOperator = ASCIIZERO;
+                    //}
                     resultBox.Text = getFormattedNumber(result);
                 }
             }
