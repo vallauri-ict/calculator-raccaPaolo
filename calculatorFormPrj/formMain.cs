@@ -63,12 +63,20 @@ namespace calculatorFormPrj
 
         }
 
+        /// <summary>
+        /// Function to inizialize the Form
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void formMain_Load(object sender, EventArgs e)
         {
             MakeResultBox();
             MakeButtons(buttons);
         }
 
+        /// <summary>
+        /// Function to inizialize and make the Resultbox
+        /// </summary>
         private void MakeResultBox()
         {
             resultBox = new RichTextBox();
@@ -85,6 +93,11 @@ namespace calculatorFormPrj
 
         }
 
+        /// <summary>
+        /// Function to manage the change on ResultBox text
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ResultBox_TextChanged(object sender, EventArgs e)
         {
            
@@ -99,6 +112,10 @@ namespace calculatorFormPrj
             }
         }
 
+        /// <summary>
+        /// Function to create dynamically the buttons matrix
+        /// </summary>
+        /// <param name="buttons">The button struct</param>
         private void MakeButtons(ButtonStruct[,] buttons)
         {
             int buttonWidth = 82, buttonHeight = 60;
@@ -131,6 +148,11 @@ namespace calculatorFormPrj
 
         }
 
+        /// <summary>
+        /// Function to manage the button click. Its work depends on sender param
+        /// </summary>
+        /// <param name="sender">The clicked button</param>
+        /// <param name="e"></param>
         private void Button_Click(object sender, EventArgs e)
         {
             //qualsiasi controllo del netframework deriva sempre da object
@@ -204,6 +226,10 @@ namespace calculatorFormPrj
 
         }
 
+        /// <summary>
+        /// function to reset the program as default
+        /// </summary>
+        /// <param name="numberToWrite">Facoltative param to reset text of resultbox</param>
         private void clearAll(double numberToWrite = 0)
         {
             operand1 = 0;
@@ -213,6 +239,10 @@ namespace calculatorFormPrj
             resultBox.Text = getFormattedNumber(numberToWrite);
         }
 
+        /// <summary>
+        /// function to manage the operators behaviour
+        /// </summary>
+        /// <param name="bs">Button struct</param>
         private void manageOperators(ButtonStruct bs)
         {
             //mettere prima di switch per ordine operazioni
@@ -358,6 +388,14 @@ namespace calculatorFormPrj
             }
             
         }
+        
+        /// <summary>
+        /// Function to format the result before showing it in the Resultbox
+        /// It uses the user geografical settings.
+        /// It trims the useless 0 at the end of the string
+        /// </summary>
+        /// <param name="number">Number to format</param>
+        /// <returns>The formatted number</returns>
         private string getFormattedNumber(double number)
         {
             //return String.Format ("{0:0,0.0000000000000000}");
