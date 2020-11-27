@@ -39,8 +39,8 @@ namespace calculatorFormPrj
         }
         private ButtonStruct[,] buttons =
         {
-            {new ButtonStruct(' ',false),new ButtonStruct(' ',false),new ButtonStruct('C',false),new ButtonStruct('<',false)},
-            {new ButtonStruct('¼',false,false,false,false,true,false,true),new ButtonStruct('²',false,false,false,false,true,false,true),new ButtonStruct('√',false,false,false,false,true,false,true),new ButtonStruct('/',false,false,false,false,true)},
+            {new ButtonStruct('√',false,false,false,false,true,false,true),new ButtonStruct('∛',false,false,false,false,true,false,true),new ButtonStruct('C',false),new ButtonStruct('<',false)},
+            {new ButtonStruct('²',false,false,false,false,true,false,true),new ButtonStruct('³',false,false,false,false,true,false,true),new ButtonStruct('⅟',false,false,false,false,true,false,true),new ButtonStruct('/',false,false,false,false,true)},
             {new ButtonStruct('7',true,true),new ButtonStruct('8',true,true),new ButtonStruct('9',true,true),new ButtonStruct('x',false,false,false,false,true)},
             {new ButtonStruct('4',true,true),new ButtonStruct('5',true,true),new ButtonStruct('6',true,true),new ButtonStruct('-',false,false,false,false,true)},
             {new ButtonStruct('1',true,true),new ButtonStruct('2',true,true),new ButtonStruct('3',true,true),new ButtonStruct('+',false,false,false,false,true)},
@@ -221,7 +221,7 @@ namespace calculatorFormPrj
             {
                 switch (bs.Content)
                 {
-                    case '¼':
+                    case '⅟':
                         specialOperatorResult = 1 / (Convert.ToDouble(resultBox.Text));
                         if (lastOperator != ASCIIZERO)
                         {
@@ -238,7 +238,7 @@ namespace calculatorFormPrj
                         if (lastOperator != ASCIIZERO)
                         {
                             operand2 = Math.Sqrt(Convert.ToDouble(resultBox.Text));
-                            resultBox.Text = getFormattedNumber(operand2);
+                            //resultBox.Text = getFormattedNumber(operand2);
                         }
                         else
                         {
@@ -250,7 +250,7 @@ namespace calculatorFormPrj
                         if (lastOperator != ASCIIZERO)
                         {
                             operand2 = Math.Pow(Convert.ToDouble(resultBox.Text),2);
-                            resultBox.Text = getFormattedNumber(operand2);
+                            //resultBox.Text = getFormattedNumber(operand2);
                         }
                         else
                         {
@@ -258,14 +258,42 @@ namespace calculatorFormPrj
                             resultBox.Text = getFormattedNumber(result);
                         }
                         break;
+                    case '³':
+                        if (lastOperator != ASCIIZERO)
+                        {
+                            operand2 = Math.Pow(Convert.ToDouble(resultBox.Text), 3);
+                        }
+                        else
+                        {
+                            result = Math.Pow(Convert.ToDouble(resultBox.Text), 3);
+                            resultBox.Text = getFormattedNumber(result);
+                        }
+                        break;
+                    case '∛':
+                        if (lastOperator != ASCIIZERO)
+                        {
+                            
+                            operand2 = Math.Pow(Convert.ToDouble(resultBox.Text),(1.0/3));
+                        }
+                        else
+                        {
+                            result = Math.Pow(Convert.ToDouble(resultBox.Text), (1.0/3));
+                            resultBox.Text = getFormattedNumber(result);
+
+                        }
+                        break;
 
                 }
                 lastButtonClicked = bs;
             }
-            if (lastOperator == ASCIIZERO)//valore di default
+             if (lastOperator == ASCIIZERO)//valore di default
             {
                 operand1 = double.Parse(resultBox.Text);
-                lastOperator = bs.Content;
+                if (!bs.IsSpecialOperator)
+                {
+                    lastOperator = bs.Content;
+                }
+                
             }
             else
             {
@@ -280,20 +308,22 @@ namespace calculatorFormPrj
                     }
                     else
                     {
+                        
                         lastOperator = bs.Content;
                     }
 
                 }
-                else
-                {
-                    //if (!lastButtonClicked.IsEqualSign&&bs.Content!= '¼'&&bs.Content!= '√')
+                //if(
+                //{
+                    //if (!lastButtonClicked.IsEqualSign&&bs.Content!= '⅟'&&bs.Content!= '√')
                     if (!lastButtonClicked.IsEqualSign&&!bs.IsSpecialOperator)
                     {
                         operand2 = double.Parse(resultBox.Text);
                     }
-                   
+                    
                     switch (lastOperator)
                     {
+                    
                         case '+':
                             result = operand1 + operand2;
                             break;
@@ -306,7 +336,7 @@ namespace calculatorFormPrj
                         case '/':
                             result = operand1 / operand2;
                             break;
-                        /*case '¼':
+                        /*case '⅟':
                             result = 1 / result;//TODO: gestire casi particolar
                             break;*/
                         default:
@@ -318,12 +348,13 @@ namespace calculatorFormPrj
                         lastOperator = bs.Content;
                         operand2 = 0;
                     }
-                    //else if (bs.IsSpecialOperator)
-                    //{
-                    //    lastOperator = ASCIIZERO;
-                    //}
-                    resultBox.Text = getFormattedNumber(result);
+                else
+                {
+                    lastOperator = ASCIIZERO;
                 }
+
+                    resultBox.Text = getFormattedNumber(result);
+                //}
             }
             
         }
